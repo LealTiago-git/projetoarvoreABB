@@ -21,6 +21,8 @@ typedef struct NoArvore
 
 typedef NoArvore *Arvore;
 
+
+
 NoArvore *criar_no_arvore(int rgm, const char *nome)
 {
     NoArvore *novo_no = (NoArvore *)malloc(sizeof(NoArvore));
@@ -34,50 +36,64 @@ NoArvore *criar_no_arvore(int rgm, const char *nome)
     return novo_no;
 }
 
+
+
 NoArvore *inserir_aluno(Arvore raiz, int rgm, const char *nome)
 {
     if (raiz == NULL)
     {
         return criar_no_arvore(rgm, nome);
     }
-    if (strcmp(nome, raiz->dados.nome) < 0)
+    if (rgm < raiz->dados.rgm)
     {
         raiz->esquerda = inserir_aluno(raiz->esquerda, rgm, nome);
     }
-    else if (strcmp(nome, raiz->dados.nome) > 0)
+    else if (rgm > raiz->dados.rgm)
     {
         raiz->direita = inserir_aluno(raiz->direita, rgm, nome);
     }
     return raiz;
 }
 
-void exibir_alunos_em_ordem(const Arvore raiz)
+
+
+//MODOS DE EXIBIÇÃO DA ÁRVORE
+void exibir_alunos_in_ordem(const Arvore raiz)
 {
     if (raiz != NULL)
     {
-        exibir_alunos_em_ordem(raiz->esquerda);
+        exibir_alunos_in_ordem(raiz->esquerda);
         printf("RGM: %d\tNome: %s\n", raiz->dados.rgm, raiz->dados.nome);
-        exibir_alunos_em_ordem(raiz->direita);
+        exibir_alunos_in_ordem(raiz->direita);
     }
 }
 
-void liberar_arvore(Arvore raiz)
-{
-    if (raiz != NULL)
-    {
-        liberar_arvore(raiz->esquerda);
-        liberar_arvore(raiz->direita);
-        free(raiz);
+void exibir_alunos_pre_ordem(const Arvore raiz){
+    if(raiz != NULL){
+        printf("RGM: %d\tNome: %s\n", raiz->dados.rgm, raiz->dados.nome);
+        exibir_alunos_pre_ordem(raiz->esquerda);
+        exibir_alunos_pre_ordem(raiz->direita);
     }
 }
+
+void exibir_alunos_pos_ordem(const Arvore raiz){
+    if(raiz != NULL){
+        exibir_alunos_pos_ordem(raiz->esquerda);
+        exibir_alunos_pos_ordem(raiz->direita);
+        printf("RGM: %d\tNome: %s\n", raiz->dados.rgm, raiz->dados.nome);
+    }
+}
+
+
 
 Arvore ler_arquivo_alunos(const char *nome_arquivo)
 {
     FILE *arquivo = fopen(nome_arquivo, "r");
     if (arquivo == NULL)
     {
-        printf("Erro ao abrir o arquivo '%s'.\n", nome_arquivo);
-        return NULL;
+        printf("Erro ao abrir o arquivo '%s'.\nVerifique se o arquivo se encontra junto ao executavel do programa.", nome_arquivo);
+        getchar();
+        exit(1);
     }
 
     char linha[MAX_LINHA];
@@ -97,22 +113,17 @@ Arvore ler_arquivo_alunos(const char *nome_arquivo)
     return raiz;
 }
 
-void inserir_na_arvore(NoArvore **raiz, int rgm, char nome[]) {
-    if (*raiz == NULL) {
-        *raiz = (NoArvore *)malloc(sizeof(NoArvore));
-        (*raiz)->dados.rgm = rgm;
-        strcpy((*raiz)->dados.nome, nome);
-        (*raiz)->esquerda = NULL;
-        (*raiz)->direita = NULL;
-    } else if (rgm < (*raiz)->dados.rgm) {
-        inserir_na_arvore(&(*raiz)->esquerda, rgm, nome);
-    } else if (rgm > (*raiz)->dados.rgm) {
-        inserir_na_arvore(&(*raiz)->direita, rgm, nome);
-    } else {
-        printf("RGM já cadastrado!\n");
+
+//OPERAÇÕES NA ÁRVORE
+void liberar_arvore(Arvore raiz)
+{
+    if (raiz != NULL)
+    {
+        liberar_arvore(raiz->esquerda);
+        liberar_arvore(raiz->direita);
+        free(raiz);
     }
 }
-
 
 NoArvore* pesquisar_na_arvore(NoArvore *raiz, int rgm) {
     if (raiz == NULL) {
@@ -180,12 +191,18 @@ void remover_aluno(Arvore* raiz, int rgm) {
     *raiz = remover_no(*raiz, rgm, 1);
     printf("Aluno removido com sucesso!\n");
 }
+
+//MENU-------------------
+
 int main()
 {
     setlocale(LC_ALL, "pt_BR.UTF-8");
     const char *nome_arquivo = "bancodedados.txt";
 
     Arvore arvore_alunos = ler_arquivo_alunos(nome_arquivo);
+    
+    //ESSA PARTE TA SENDO USADA PARA TESTE, TUDO ISSO VAI FICAR EM ALGUM LUGAR NO MENU
+    arvore_alunos = inserir_aluno(arvore_alunos,40,"Fernando");
 
     if (arvore_alunos == NULL)
     {
@@ -193,12 +210,13 @@ int main()
     }
     else
     {
-        printf("Alunos em ordem alfabética:\n");
-        exibir_alunos_em_ordem(arvore_alunos);
-
-        remover_aluno(&arvore_alunos, 12345678);
+        printf("Lista in ORDEM: \n");
+        exibir_alunos_in_ordem(arvore_alunos);
+        remover_aluno(&arvore_alunos,10);
+        exibir_alunos_in_ordem(arvore_alunos);
     }
 
+    getchar();
     liberar_arvore(arvore_alunos);
     return 0;
 }
