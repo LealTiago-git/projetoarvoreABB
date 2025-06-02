@@ -201,16 +201,19 @@ void remover_aluno(Arvore* raiz, int rgm) {
 
     int opcao;
     do {
-        printf("\n======= MENU =======\n");
-        printf("1. Inserir aluno\n");
-        printf("2. Exibir alunos (In-Ordem)\n");
-        printf("3. Exibir alunos (Pré-Ordem)\n");
-        printf("4. Exibir alunos (Pós-Ordem)\n");
-        printf("5. Buscar aluno por RGM\n");
-        printf("6. Remover aluno\n");
-        printf("0. Sair\n");
-        printf("====================\n");
-        printf("Escolha uma opção: ");
+        printf("\n======= MENU =======\n\n");
+        printf("ALUNOS: Alik, Tiago, Jonatha, Lucas, Marcos e Fernando.\n");
+        printf("DISCIPLINA: ESTRUTURA DE DADOS I\n");
+        printf("PROFESSOR: WALACE BONFIM\n\n");
+        printf("1 - INSERIR - fornecer RGM e NOME\n");
+        printf("2 - EXIBIR ÁRVORE (In-Ordem)\n");
+        printf("3 - EXIBIR ÁRVORE (Pré-Ordem)\n");
+        printf("4 - EXIBIR ÁRVORE (Pós-Ordem)\n");
+        printf("5 - PESQUISAR - fornecer o RGM a pesquisar\n");
+        printf("6 - ESVAZIAR ÁRVORE\n");
+        printf("0 - SAIR\n");
+        printf("\n====================\n\n");
+        printf("DIGITE SUA OPÇÃO: ");
         scanf("%d", &opcao);
         getchar(); // Limpa o buffer de entrada
 
