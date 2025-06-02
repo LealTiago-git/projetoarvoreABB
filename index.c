@@ -57,7 +57,6 @@ NoArvore *inserir_aluno(Arvore raiz, int rgm, const char *nome)
 
 
 
-//MODOS DE EXIBI√á√ÉO DA √ÅRVORE
 void exibir_alunos_in_ordem(const Arvore raiz)
 {
     if (raiz != NULL)
@@ -84,6 +83,21 @@ void exibir_alunos_pos_ordem(const Arvore raiz){
     }
 }
 
+void exibir_arvore_grafica(NoArvore *raiz, int nivel) {
+    if (raiz == NULL) {
+        return;
+    }
+
+    exibir_arvore_grafica(raiz->direita, nivel + 1);
+
+    for (int i = 0; i < nivel; i++) {
+        printf("     ");
+    }
+
+    printf("RGM: %d - %s\n", raiz->dados.rgm, raiz->dados.nome);
+
+    exibir_arvore_grafica(raiz->esquerda, nivel + 1);
+}
 
 
 Arvore ler_arquivo_alunos(const char *nome_arquivo)
@@ -114,7 +128,6 @@ Arvore ler_arquivo_alunos(const char *nome_arquivo)
 }
 
 
-//OPERA√á√ïES NA √ÅRVORE
 void liberar_arvore(Arvore raiz)
 {
     if (raiz != NULL)
@@ -154,7 +167,7 @@ NoArvore* remover_no(NoArvore* raiz, int rgm, int mostrar_conteudo) {
         raiz->direita = remover_no(raiz->direita, rgm, mostrar_conteudo);
     } else {
         if (mostrar_conteudo) {
-            printf("N√≥ removido - RGM: %d, Nome: %s\n", raiz->dados.rgm, raiz->dados.nome);
+            printf("N” removido - RGM: %d, Nome: %s\n", raiz->dados.rgm, raiz->dados.nome);
         }
 
         NoArvore* temp;
@@ -178,13 +191,13 @@ NoArvore* remover_no(NoArvore* raiz, int rgm, int mostrar_conteudo) {
 
 void remover_aluno(Arvore* raiz, int rgm) {
     if (*raiz == NULL) {
-        printf("√Årvore vazia!\n");
+        printf("¡rvore vazia!\n");
         return;
     }
 
     NoArvore* no = pesquisar_na_arvore(*raiz, rgm);
     if (no == NULL) {
-        printf("Aluno com RGM %d n√£o encontrado!\n", rgm);
+        printf("Aluno com RGM %d n„o encontrado!\n", rgm);
         return;
     }
 
@@ -194,14 +207,14 @@ void remover_aluno(Arvore* raiz, int rgm) {
 
 int main()
 {
-    setlocale(LC_ALL, "pt_BR.UTF-8");
+    setlocale(LC_ALL, "portuguese");
     const char *nome_arquivo = "bancodedados.txt";
 
     Arvore arvore_alunos = ler_arquivo_alunos(nome_arquivo);
 
     int opcao;
     do {
-        printf("\n======= MENU =======\n\n");
+        printf("\n======================== MENU =========================\n\n");
         printf("ALUNOS: Alik, Tiago, Jonatha, Lucas, Marcos e Fernando.\n");
         printf("DISCIPLINA: ESTRUTURA DE DADOS I\n");
         printf("PROFESSOR: WALACE BONFIM\n\n");
@@ -212,24 +225,26 @@ int main()
         printf("5 - PESQUISAR - fornecer o RGM a pesquisar\n");
         printf("6 - REMOVER UM N” - fornecer o RGM remover\n");
         printf("7 - ESVAZIAR ¡RVORE\n");
+        printf("8 - EXIBIR ¡RVORE GRAFICAMENTE\n");
         printf("0 - SAIR\n");
-        printf("\n====================\n\n");
+        printf("\n=======================================================\n\n");
         printf("DIGITE SUA OP«√O: ");
         scanf("%d", &opcao);
-        getchar(); // Limpa o buffer de entrada
+        getchar();
 
         switch (opcao) {
             case 1: {
+                system("cls");
                 int rgm;
                 char nome[MAX_NOME];
 
                 printf("Digite o RGM do aluno: ");
                 scanf("%d", &rgm);
-                getchar(); // Limpa o buffer
+                getchar();
 
                 printf("Digite o nome do aluno: ");
                 fgets(nome, sizeof(nome), stdin);
-                nome[strcspn(nome, "\n")] = '\0'; // Remove o \n final
+                nome[strcspn(nome, "\n")] = '\0';
 
                 arvore_alunos = inserir_aluno(arvore_alunos, rgm, nome);
                 printf("Aluno inserido com sucesso!\n");
@@ -237,21 +252,25 @@ int main()
             }
 
             case 2:
+                system("cls");
                 printf("\nAlunos (In-Ordem):\n");
                 exibir_alunos_in_ordem(arvore_alunos);
                 break;
 
             case 3:
+                system("cls");
                 printf("\nAlunos (PrÈ-Ordem):\n");
                 exibir_alunos_pre_ordem(arvore_alunos);
                 break;
 
             case 4:
+                system("cls");
                 printf("\nAlunos (PÛs-Ordem):\n");
                 exibir_alunos_pos_ordem(arvore_alunos);
                 break;
 
             case 5: {
+                system("cls");
                 int rgm;
                 printf("Digite o RGM do aluno a ser buscado: ");
                 scanf("%d", &rgm);
@@ -266,6 +285,7 @@ int main()
             }
 
             case 6: {
+                system("cls");
                 int rgm;
                 printf("Digite o RGM do aluno a ser removido: ");
                 scanf("%d", &rgm);
@@ -274,11 +294,19 @@ int main()
             }
 
             case 7: {
+                system("cls");
                 liberar_arvore(arvore_alunos);
                 arvore_alunos = NULL;
                 printf("¡rvore esvaziada com sucesso!\n");
                 break;
             }
+
+            case 8:
+                system("cls");
+    			printf("\n¡rvore (visualizaÁ„o gr·fica):\n\n");
+    			exibir_arvore_grafica(arvore_alunos, 0);
+    			break;
+
 
             case 0:
                 printf("Encerrando o programa...\n");
@@ -289,8 +317,7 @@ int main()
                 printf("OpÁ„o inv·lida. Tente novamente.\n");
         }
 
-    } while (1); // LaÁo infinito, pois a opÁ„o 0 agora usa exit()
+    } while (1);
 
-    return 0; // Nunca ser· alcanÁado, mas mantido por boas pr·ticas
+    return 0;
 }
-
