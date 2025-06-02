@@ -97,6 +97,89 @@ Arvore ler_arquivo_alunos(const char *nome_arquivo)
     return raiz;
 }
 
+void inserir_na_arvore(NoArvore **raiz, int rgm, char nome[]) {
+    if (*raiz == NULL) {
+        *raiz = (NoArvore *)malloc(sizeof(NoArvore));
+        (*raiz)->dados.rgm = rgm;
+        strcpy((*raiz)->dados.nome, nome);
+        (*raiz)->esquerda = NULL;
+        (*raiz)->direita = NULL;
+    } else if (rgm < (*raiz)->dados.rgm) {
+        inserir_na_arvore(&(*raiz)->esquerda, rgm, nome);
+    } else if (rgm > (*raiz)->dados.rgm) {
+        inserir_na_arvore(&(*raiz)->direita, rgm, nome);
+    } else {
+        printf("RGM já cadastrado!\n");
+    }
+}
+
+
+NoArvore* pesquisar_na_arvore(NoArvore *raiz, int rgm) {
+    if (raiz == NULL) {
+        return NULL;
+    } else if (rgm == raiz->dados.rgm) {
+        return raiz;
+    } else if (rgm < raiz->dados.rgm) {
+        return pesquisar_na_arvore(raiz->esquerda, rgm);
+    } else {
+        return pesquisar_na_arvore(raiz->direita, rgm);
+    }
+}
+
+NoArvore* encontrar_min(NoArvore* no) {
+    if (no == NULL) return NULL;
+    while (no->esquerda != NULL) {
+        no = no->esquerda;
+    }
+    return no;
+}
+
+NoArvore* remover_no(NoArvore* raiz, int rgm, int mostrar_conteudo) {
+    if (raiz == NULL) return NULL;
+
+    if (rgm < raiz->dados.rgm) {
+        raiz->esquerda = remover_no(raiz->esquerda, rgm, mostrar_conteudo);
+    } else if (rgm > raiz->dados.rgm) {
+        raiz->direita = remover_no(raiz->direita, rgm, mostrar_conteudo);
+    } else {
+        if (mostrar_conteudo) {
+            printf("Nó removido - RGM: %d, Nome: %s\n", raiz->dados.rgm, raiz->dados.nome);
+        }
+
+        NoArvore* temp;
+
+        if (raiz->esquerda == NULL) {
+            temp = raiz->direita;
+            free(raiz);
+            return temp;
+        } else if (raiz->direita == NULL) {
+            temp = raiz->esquerda;
+            free(raiz);
+            return temp;
+        }
+
+        temp = encontrar_min(raiz->direita);
+        raiz->dados = temp->dados;
+        raiz->direita = remover_no(raiz->direita, temp->dados.rgm, 0);
+    }
+    return raiz;
+}
+
+void remover_aluno(Arvore* raiz, int rgm) {
+    if (*raiz == NULL) {
+        printf("Árvore vazia!\n");
+        return;
+    }
+
+    NoArvore* no = pesquisar_na_arvore(*raiz, rgm);
+    if (no == NULL) {
+        printf("Aluno com RGM %d não encontrado!\n", rgm);
+        return;
+    }
+
+    *raiz = remover_no(*raiz, rgm, 1);
+    printf("Aluno removido com sucesso!\n");
+}
 int main()
 {
     setlocale(LC_ALL, "pt_BR.UTF-8");
@@ -112,6 +195,8 @@ int main()
     {
         printf("Alunos em ordem alfabética:\n");
         exibir_alunos_em_ordem(arvore_alunos);
+
+        remover_aluno(&arvore_alunos, 12345678);
     }
 
     liberar_arvore(arvore_alunos);
