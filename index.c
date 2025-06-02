@@ -192,7 +192,7 @@ void remover_aluno(Arvore* raiz, int rgm) {
     printf("Aluno removido com sucesso!\n");
 }
 
-    int main()
+int main()
 {
     setlocale(LC_ALL, "pt_BR.UTF-8");
     const char *nome_arquivo = "bancodedados.txt";
@@ -210,7 +210,8 @@ void remover_aluno(Arvore* raiz, int rgm) {
         printf("3 - EXIBIR ÁRVORE (Pré-Ordem)\n");
         printf("4 - EXIBIR ÁRVORE (Pós-Ordem)\n");
         printf("5 - PESQUISAR - fornecer o RGM a pesquisar\n");
-        printf("6 - ESVAZIAR ÁRVORE\n");
+        printf("6 - REMOVER UM NÓ - fornecer o RGM remover\n");
+        printf("7 - ESVAZIAR ÁRVORE\n");
         printf("0 - SAIR\n");
         printf("\n====================\n\n");
         printf("DIGITE SUA OPÇÃO: ");
@@ -272,16 +273,24 @@ void remover_aluno(Arvore* raiz, int rgm) {
                 break;
             }
 
+            case 7: {
+                liberar_arvore(arvore_alunos);
+                arvore_alunos = NULL;
+                printf("Árvore esvaziada com sucesso!\n");
+                break;
+            }
+
             case 0:
                 printf("Encerrando o programa...\n");
-                break;
+                liberar_arvore(arvore_alunos);
+                exit(0);
 
             default:
                 printf("Opção inválida. Tente novamente.\n");
         }
 
-    } while (opcao != 0);
+    } while (1); // Laço infinito, pois a opção 0 agora usa exit()
 
-    liberar_arvore(arvore_alunos);
-    return 0;
+    return 0; // Nunca será alcançado, mas mantido por boas práticas
 }
+
