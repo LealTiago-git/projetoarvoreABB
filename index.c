@@ -192,31 +192,93 @@ void remover_aluno(Arvore* raiz, int rgm) {
     printf("Aluno removido com sucesso!\n");
 }
 
-//MENU-------------------
-
-int main()
+    int main()
 {
     setlocale(LC_ALL, "pt_BR.UTF-8");
     const char *nome_arquivo = "bancodedados.txt";
 
     Arvore arvore_alunos = ler_arquivo_alunos(nome_arquivo);
-    
-    //ESSA PARTE TA SENDO USADA PARA TESTE, TUDO ISSO VAI FICAR EM ALGUM LUGAR NO MENU
-    arvore_alunos = inserir_aluno(arvore_alunos,40,"Fernando");
 
-    if (arvore_alunos == NULL)
-    {
-        printf("Ãrvore estÃ¡ vazia. Nenhum aluno foi inserido.\n");
-    }
-    else
-    {
-        printf("Lista in ORDEM: \n");
-        exibir_alunos_in_ordem(arvore_alunos);
-        remover_aluno(&arvore_alunos,10);
-        exibir_alunos_in_ordem(arvore_alunos);
-    }
+    int opcao;
+    do {
+        printf("\n======= MENU =======\n");
+        printf("1. Inserir aluno\n");
+        printf("2. Exibir alunos (In-Ordem)\n");
+        printf("3. Exibir alunos (Pré-Ordem)\n");
+        printf("4. Exibir alunos (Pós-Ordem)\n");
+        printf("5. Buscar aluno por RGM\n");
+        printf("6. Remover aluno\n");
+        printf("0. Sair\n");
+        printf("====================\n");
+        printf("Escolha uma opção: ");
+        scanf("%d", &opcao);
+        getchar(); // Limpa o buffer de entrada
 
-    getchar();
+        switch (opcao) {
+            case 1: {
+                int rgm;
+                char nome[MAX_NOME];
+
+                printf("Digite o RGM do aluno: ");
+                scanf("%d", &rgm);
+                getchar(); // Limpa o buffer
+
+                printf("Digite o nome do aluno: ");
+                fgets(nome, sizeof(nome), stdin);
+                nome[strcspn(nome, "\n")] = '\0'; // Remove o \n final
+
+                arvore_alunos = inserir_aluno(arvore_alunos, rgm, nome);
+                printf("Aluno inserido com sucesso!\n");
+                break;
+            }
+
+            case 2:
+                printf("\nAlunos (In-Ordem):\n");
+                exibir_alunos_in_ordem(arvore_alunos);
+                break;
+
+            case 3:
+                printf("\nAlunos (Pré-Ordem):\n");
+                exibir_alunos_pre_ordem(arvore_alunos);
+                break;
+
+            case 4:
+                printf("\nAlunos (Pós-Ordem):\n");
+                exibir_alunos_pos_ordem(arvore_alunos);
+                break;
+
+            case 5: {
+                int rgm;
+                printf("Digite o RGM do aluno a ser buscado: ");
+                scanf("%d", &rgm);
+
+                NoArvore* resultado = pesquisar_na_arvore(arvore_alunos, rgm);
+                if (resultado != NULL) {
+                    printf("Aluno encontrado - RGM: %d, Nome: %s\n", resultado->dados.rgm, resultado->dados.nome);
+                } else {
+                    printf("Aluno com RGM %d não encontrado!\n", rgm);
+                }
+                break;
+            }
+
+            case 6: {
+                int rgm;
+                printf("Digite o RGM do aluno a ser removido: ");
+                scanf("%d", &rgm);
+                remover_aluno(&arvore_alunos, rgm);
+                break;
+            }
+
+            case 0:
+                printf("Encerrando o programa...\n");
+                break;
+
+            default:
+                printf("Opção inválida. Tente novamente.\n");
+        }
+
+    } while (opcao != 0);
+
     liberar_arvore(arvore_alunos);
     return 0;
 }
